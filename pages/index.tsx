@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import Header from "../components/Header";
-import { sanityclient, urlfor } from "../sanity";
+import { sanityclient, urlFor } from "../sanity";
 import { Post } from "../typing";
 
 interface Props {
@@ -37,42 +37,47 @@ function Home({ posts }: Props): JSX.Element {
       </div>
 
       <div>
-        {posts.length && posts.map((post) => {
-          return (
-            <Link key={post._id} href={`/post/${post.slug.current}`}>
-              <div>
-                <img src={urlfor(post.mainImage).url()!} alt="" />
+        {posts.length &&
+          posts.map((post) => {
+            return (
+              <Link key={post._id} href={`/post/${post.slug.current}`}>
                 <div>
+                  <img src={urlFor(post.mainImage).url()!} alt="" />
                   <div>
-                    <p>{post.title}</p>
-                    <p>{post.description} by {post.author.name}</p>
+                    <div>
+                      <p>{post.title}</p>
+                      <p>
+                        {post.description} by {post.author.name}
+                      </p>
+                    </div>
+                    <img src={urlFor(post.author.image).url()!} alt="" />
                   </div>
-                  <img src={urlfor(post.author.image).url()!} alt="" />
                 </div>
-              </div>
-            </Link>
-          );
-        })}
+              </Link>
+            );
+          })}
       </div>
     </div>
   );
 }
 
 export const getServerSideProps = async () => {
-  const query = `*[_type == "post"] {
+  const query = `
+  *[_type == "post"] {
   _id,
     title,
     slug,
-    author -> {
+    author-> {
       name, 
       image
     },
     description,
     mainImage,
-    slug
-  `;
+    slug    
+}`;
 
   const posts = await sanityclient.fetch(query);
+  console.log(posts);
 
   return {
     props: {

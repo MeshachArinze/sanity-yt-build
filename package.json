@@ -7,8 +7,10 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.20.2",
+    "@sanity/image-url": "^1.0.1",
     "next": "latest",
     "next-sanity": "^4.0.4",
+    "next-sanity-image": "^5.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },

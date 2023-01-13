@@ -1,10 +1,3 @@
-import {
-  createClient,
-} from "next-sanity";
-
-import createImageUrlBuilder from "@sanity/image-url";
-
-
 export const config = {
   /**
    * Find your project ID and dataset in `sanity.json` in your studio project.
@@ -15,7 +8,7 @@ export const config = {
    **/
 
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "PRODUCTION",
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ,
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
 
   /**
    * Set useCdn to `false` if your application require the freshest possible
@@ -27,12 +20,4 @@ export const config = {
 
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2021-10-21", // or today's date for latest
 };
-
 console.log(config);
-
-export const urlFor = (source) => createImageUrlBuilder(config).image(source);
-
-
-export const sanityclient = createClient(config);
-
-

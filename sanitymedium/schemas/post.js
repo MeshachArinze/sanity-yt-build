@@ -8,6 +8,12 @@ export default defineType({
     defineField({
       name: 'title',
       title: 'Title',
+      description: 'keep it simple',
+      type: 'string',
+    }),
+    defineField({
+      name: 'describtion',
+      title: 'Description',
       type: 'string',
     }),
     defineField({
@@ -19,11 +25,7 @@ export default defineType({
         maxLength: 96,
       },
     }),
-    defineField({
-      name: 'describtion',
-      title: 'Description',
-      type: 'string',
-    }),
+
     defineField({
       name: 'author',
       title: 'Author',
@@ -54,7 +56,6 @@ export default defineType({
       title: 'Body',
       type: 'blockContent',
     }),
-    
   ],
 
   preview: {
