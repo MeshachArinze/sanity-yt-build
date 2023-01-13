@@ -30,27 +30,27 @@ function Home({ posts }: Props): JSX.Element {
           </h2>
         </div>
         <img
-          className="hidden md:inline-flex h-32 lg:h-full"
+          className="hidden md:inline-flex h-32 lg:h-full md:h-[16rem]"
           src="https://accountabilitylab.org/wp-content/uploads/2020/03/Medium-logo.png"
           alt=""
         />
       </div>
 
-      <div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 p-2 md:p-6">
         {posts.length &&
           posts.map((post) => {
             return (
               <Link key={post._id} href={`/post/${post.slug.current}`}>
-                <div>
-                  <img src={urlFor(post.mainImage).url()!} alt="" />
-                  <div>
+                <div className="group cursor-pointer overflow-hidden rounded-lg border">
+                  <img className="h-60 w-full transition-transform duration-200 ease-in-out object-fit group-hover:scale-105" src={urlFor(post.mainImage).url()!} alt="" />
+                  <div className="flex justify-between p-5 bg-white">
                     <div>
                       <p>{post.title}</p>
                       <p>
                         {post.description} by {post.author.name}
                       </p>
                     </div>
-                    <img src={urlFor(post.author.image).url()!} alt="" />
+                    <img className="h-12 w-12 rounded-full" src={urlFor(post.author.image).url()!} alt="" />
                   </div>
                 </div>
               </Link>
