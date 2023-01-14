@@ -20,4 +20,3 @@ export const config = {
 
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2021-10-21", // or today's date for latest
 };
-console.log(config);
