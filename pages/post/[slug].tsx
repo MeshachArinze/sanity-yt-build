@@ -1,16 +1,33 @@
 import { GetStaticProps, PreviewData } from "next";
 import Header from "../../components/Header";
-import { sanityclient,  } from "../../sanity"; 
-import { Post } from "../../typing";
+import { sanityclient, urlFor } from "../../sanity";
+import { Posts } from "../../typing";
 
 interface Props {
-    post: Post
+  post: Posts;
 }
 
-export default function Post({post}: Props) {
+export default function Post({ post }: Props) {
   return (
     <div>
       <Header />
+      <img
+        className="w-full h-40 object-cover "
+        src={urlFor(post.mainImage).url()!}
+        alt=""
+      />
+
+      <article className="max-w-3xl mx-auto p-5">
+        <h1 className="text-3xl mt-10 mb-3">{post.title}</h1>
+        <h2 className="text-xl font-light">{post.description}</h2>
+        <div className="flex items-center space-x-2">
+          <img src={urlFor(post.author.image).url()!} className="w-10 h-10 rounded-full" />
+          <p className="font-extralight text-sm">
+            Blog post by {" "}
+            <span className="text-green-600">{post.author.name} - published at  {new Date(post._credential).toLocaleTimeString()}</span>
+          </p>
+        </div>
+      </article>
     </div>
   );
 }
@@ -25,24 +42,21 @@ export const getStaticPaths = async () => {
     
 }`;
 
-const posts = await sanityclient.fetch(query);
+  const posts = await sanityclient.fetch(query);
 
-const paths = posts.map((post: Post) => ({
+  const paths = posts.map((post: Posts) => ({
     params: {
-        slug: post.slug.current,
-    }
-}))
+      slug: post.slug.current,
+    },
+  }));
 
-return {
-    paths, 
-    fallback: "blocking"
-}
-
+  return {
+    paths,
+    fallback: "blocking",
+  };
 };
 
-export const getStaticProps: ({ params }: { params: any }) => Promise<{}> = async ({
-  params,
-}) => {
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   const query = `*[_type == "post && slug.current == $slug][0] {
         _id,
         _createdAt,
@@ -66,5 +80,16 @@ export const getStaticProps: ({ params }: { params: any }) => Promise<{}> = asyn
     slug: params?.slug,
   });
 
-  return {};
+  if (!post) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      post,
+    },
+    revalidate: 1,
+  };
 };

@@ -2,10 +2,10 @@ import Head from "next/head";
 import Link from "next/link";
 import Header from "../components/Header";
 import { sanityclient, urlFor } from "../sanity";
-import { Post } from "../typing";
+import { Posts } from "../typing";
 
 interface Props {
-  posts: [Post];
+  posts: [Posts];
 }
 
 function Home({ posts }: Props): JSX.Element {
