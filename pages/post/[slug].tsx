@@ -3,22 +3,37 @@ import PortableText from "react-portable-text";
 import Header from "../../components/Header";
 import { sanityclient, urlFor } from "../../sanity";
 import { Posts } from "../../typing";
-import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { error } from "console";
 
 interface Props {
   post: Posts;
 }
 
-interface FormValues  {
-    _id: number,
+interface FormValues {
+  _id: number;
   name: string;
   comment: string;
   email: string;
-};
+}
 
 export default function Post({ post }: Props) {
-    const {register, handleSubmit, formState: { errors}, } = useForm<FormValues>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>();
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    alert(JSON.stringify(data));
+    await fetch("/api/createComment", {
+        method: "POST",
+        body: JSON.stringify(data),
+    })
+    .then(() => {
+        console.log(data);
+    })
+    .catch((err) => console.error(err))};
   return (
     <div>
       <Header />
@@ -47,8 +62,8 @@ export default function Post({ post }: Props) {
 
         <div>
           <PortableText
-          className=""
-          content={post.body}
+            className=""
+            content={post.body}
             dataset={process.env.NEXT_PUBLIC_SANITY_DATASET}
             projectId={process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!}
             serializers={{
@@ -70,10 +85,55 @@ export default function Post({ post }: Props) {
       </article>
       <hr className="max-w-lg my-5 mx-auto border border-yellow" />
 
-      <form className="flex flex-col p-5 max-w-2xl mx-auto mb-10">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col p-5 max-w-2xl mx-auto mb-10"
+      >
         <h3 className="text-sm text-yellow-500">Enjoyed article</h3>
         <h4 className="text-3xl font-bold">Leave a comment below</h4>
         <hr className="py-3 mt-2" />
+
+        <input {...register("_id")} type="hidden" name="_id" value={post._id} />
+
+        <label className="block mb-5">
+          <span className="text-gray-700">Name</span>
+
+          <input
+            {...register("name", { required: true })}
+            className="shadow  border  rounded py-2  px-3 form-input mt-1 block  w-full ring-yellow-500  outline-none  focus:ring "
+            placeholder="ekene meshach"
+            type="text"
+          />
+        </label>
+
+        <label className="block mb-5">
+          <span className="text-gray-700">Email</span>
+
+          <input
+            {...register("email", { required: true })}
+            className="shadow  border  rounded py-2  px-3 form-input mt-1 block  w-full ring-yellow-500  outline-none  focus:ring "
+            placeholder="name123@gmail.com"
+            type="email"
+            {...register("email")}
+          />
+        </label>
+
+        <label className="block mb-5">
+          <span className="text-gray-700">Comment</span>
+          <textarea
+            {...register("comment", { required: true })}
+            className="shadow  border  rounded py-2  px-3 form-input mt-1 block  w-full ring-yellow-500  outline-none  focus:ring "
+            {...register("comment")}
+            placeholder="About you"
+          />
+        </label>
+        <div className="flex flex-col p-5">
+            {errors.name ? (<span className="text-red-500">The name is required</span>) : null}
+            {errors.email ? (<span className="text-red-500">The email is required</span>) : null}
+            {errors.comment ? (<span className="text-red-500">The comment is required</span>) : null}
+        </div>
+
+        <input className="shadow hover:bg-yellow-400 bg-yellow-500 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded cursor-pointer" type="submit" />
       </form>
     </div>
   );
